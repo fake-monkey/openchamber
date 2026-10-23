@@ -41,6 +41,7 @@ import type { ComposerEditorViewStore } from './viewStore';
 import { ComposerEditorView } from './ComposerEditorView';
 import { composerEditorTheme, composerSelectionExtension } from './theme';
 import { handleComposerHostMouseDown } from './hostMouseDown';
+import { scriptAwareMouseSelection } from './wordSelection';
 import { getComposerHeightLimit, isComposerContentCapped } from './heightLimit';
 import { restoreDeferredEnterModifiers } from '../keyboardPolicy';
 import { timerCaretBlink } from '@/lib/codemirror/caretBlink';
@@ -315,6 +316,9 @@ export const ComposerEditor = React.memo(React.forwardRef<ComposerEditorHandle, 
                         // makes CodeMirror enforce cursor association on the
                         // native selection, which iOS answers with severe lag.
                         drawSelection(),
+                        // Double-click selects a word that splits at
+                        // Chinese/English boundaries instead of one whole run.
+                        EditorView.mouseSelectionStyle.of(scriptAwareMouseSelection),
                         // Blinks the drawn caret from a timer; CodeMirror's
                         // CSS blink keeps the compositor busy every frame.
                         timerCaretBlink(),
