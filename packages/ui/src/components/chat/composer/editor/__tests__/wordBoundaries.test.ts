@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import { EditorState } from '@codemirror/state';
 
-import { wordRangeAt } from '../wordSelection';
+import { wordRangeAt } from '../wordBoundaries';
 
 const selectedText = (doc: string, pos: number) => {
     const state = EditorState.create({ doc });
