@@ -30,6 +30,21 @@ describe('wordRangeAt', () => {
         expect(selectedText('var_name2', 1)).toBe('var_name2');
     });
 
+    test('keeps accented Latin letters inside the word', () => {
+        expect(selectedText('café', 1)).toBe('café');
+        expect(selectedText('über', 3)).toBe('über');
+        expect(selectedText('Straße', 2)).toBe('Straße');
+        expect(selectedText('señor', 2)).toBe('señor');
+    });
+
+    test('keeps a decomposed accent with its base letter', () => {
+        expect(selectedText('cafe\u0301', 1)).toBe('cafe\u0301');
+    });
+
+    test('still splits accented Latin from Chinese', () => {
+        expect(selectedText('检查café的配置', 4)).toBe('café');
+    });
+
     test('treats whitespace as its own class', () => {
         expect(selectedText('a b', 1)).toBe(' ');
     });
