@@ -41,6 +41,15 @@ import type { ComposerEditorViewStore } from './viewStore';
 import { ComposerEditorView } from './ComposerEditorView';
 import { composerEditorTheme, composerSelectionExtension } from './theme';
 import { handleComposerHostMouseDown } from './hostMouseDown';
+import {
+    cursorWordGroupLeft,
+    cursorWordGroupRight,
+    deleteWordGroupBackward,
+    deleteWordGroupForward,
+    scriptAwareMouseSelection,
+    selectWordGroupLeft,
+    selectWordGroupRight,
+} from './wordBoundaries';
 import { getComposerHeightLimit, isComposerContentCapped } from './heightLimit';
 import { restoreDeferredEnterModifiers } from '../keyboardPolicy';
 import { timerCaretBlink } from '@/lib/codemirror/caretBlink';
@@ -315,6 +324,9 @@ export const ComposerEditor = React.memo(React.forwardRef<ComposerEditorHandle, 
                         // makes CodeMirror enforce cursor association on the
                         // native selection, which iOS answers with severe lag.
                         drawSelection(),
+                        // Double-click selects a word that splits at
+                        // Chinese/English boundaries instead of one whole run.
+                        EditorView.mouseSelectionStyle.of(scriptAwareMouseSelection),
                         // Blinks the drawn caret from a timer; CodeMirror's
                         // CSS blink keeps the compositor busy every frame.
                         timerCaretBlink(),
@@ -324,6 +336,36 @@ export const ComposerEditor = React.memo(React.forwardRef<ComposerEditorHandle, 
                         // over CodeMirror's defaults (Enter sends, ArrowUp
                         // walks history, Escape closes a picker).
                         Prec.highest(keymap.of(interceptKeys)),
+                        // Word gestures stop where double-click stops, instead
+                        // of CodeMirror's one-class-for-all-alphabets group.
+                        Prec.high(keymap.of([
+                            {
+                                key: 'Mod-ArrowLeft',
+                                mac: 'Alt-ArrowLeft',
+                                run: cursorWordGroupLeft,
+                                shift: selectWordGroupLeft,
+                                preventDefault: true,
+                            },
+                            {
+                                key: 'Mod-ArrowRight',
+                                mac: 'Alt-ArrowRight',
+                                run: cursorWordGroupRight,
+                                shift: selectWordGroupRight,
+                                preventDefault: true,
+                            },
+                            {
+                                key: 'Mod-Backspace',
+                                mac: 'Alt-Backspace',
+                                run: deleteWordGroupBackward,
+                                preventDefault: true,
+                            },
+                            {
+                                key: 'Mod-Delete',
+                                mac: 'Alt-Delete',
+                                run: deleteWordGroupForward,
+                                preventDefault: true,
+                            },
+                        ])),
                         keymap.of([
                             // At a document boundary these commands return false.
                             // Chromium's native page movement can then scroll
