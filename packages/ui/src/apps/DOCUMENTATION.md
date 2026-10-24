@@ -11,9 +11,14 @@
 - The Settings root supplies no selected directory to the shared sync provider. It does not start global session polling, selected-directory session bootstrap or background queue delivery/cleanup, and seeing it never marks a chat as viewed. Settings pages resolve their own project through `useSettingsDirectory`; catalog updates still use the shared sync context.
 - Its runtime shortcut hook registers Settings actions only and requires no chat sync context. Chat, model and session shortcuts remain with chat roots, so a key pressed in Settings cannot create an unseen draft or change a session selection there. Escape reaches an input or menu before the tab's close handler.
 - Settings uses the existing persistence and broadcast protocol. Moving its host changes no stored format, registry key or runtime availability.
+- The VS Code chat root's sessions sidebar reads and writes the shared `useUIStore` sidebar state (`isSidebarOpen`, `sidebarWidth`); the layout keeps no collapse flag or width of its own, so the choice persists like the desktop sidebar's.
 
 ## Decisions
 
 ### Why navigation carries intent and not the source's stores
 
 Each webview owns its own stores. A small parsed request preserves the originating Settings directory, page links, provider-connect action and new-snippet action without transferring chat state or overwriting the tab's independently edited settings.
+
+### Why the VS Code sessions sidebar shares the app's sidebar state
+
+The expanded VS Code layout renders the same sessions sidebar as the desktop layout, so it reads `useUIStore.isSidebarOpen` and `sidebarWidth` rather than keeping a VS Code-only flag in its own storage key. A second flag would disagree with the toggle the desktop layout already persists, and a second width range would apply different bounds to one stored number.
