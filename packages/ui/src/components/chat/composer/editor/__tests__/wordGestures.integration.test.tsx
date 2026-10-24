@@ -156,6 +156,12 @@ describe('composer word gestures at script boundaries', () => {
         expect(editor.current?.getValue()).toBe('');
     });
 
+    test('Ctrl+Backspace removes an accented word in one press', async () => {
+        await type('café');
+        press('Backspace', { ctrlKey: true });
+        expect(editor.current?.getValue()).toBe('');
+    });
+
     test('Ctrl+Delete deletes only the run after the caret', async () => {
         await type('检查openchamber的配置', 0);
         press('Delete', { ctrlKey: true });

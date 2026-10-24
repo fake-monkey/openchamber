@@ -2,18 +2,21 @@ import { EditorSelection, findClusterBreak, type EditorState, type SelectionRang
 import { Direction, EditorView, type ViewUpdate } from '@codemirror/view';
 
 /**
- * Classifies one character so every word gesture stops at script boundaries.
+ * Classifies one grapheme cluster so every word gesture stops at script
+ * boundaries.
  *
  * CodeMirror's default classifier treats every `\p{Alphabetic}` code point as
  * one "word" class, so Latin and CJK merge and a double-click or Ctrl+Backspace
  * on "检查openchamber的配置" takes the whole run. Distinct classes per script
- * end a word where the script changes. Classes are only compared for equality,
- * so the numbers are arbitrary.
+ * end a word where the script changes. Latin is matched by script rather than
+ * an ASCII range, so `café`, `über` and `Straße` stay whole; clusters also
+ * carry their combining marks, so a decomposed accent follows its base letter.
+ * Classes are only compared for equality, so the numbers are arbitrary.
  */
 function wordClass(char: string): number {
     if (/\s/.test(char)) return 0;
     if (/\p{Script=Han}/u.test(char)) return 1;
-    if (/[A-Za-z0-9_]/.test(char)) return 2;
+    if (/[\p{Script=Latin}\p{N}_]/u.test(char)) return 2;
     if (/[\p{L}\p{N}]/u.test(char)) return 3;
     return 4;
 }
