@@ -21,4 +21,4 @@ Each webview owns its own stores. A small parsed request preserves the originati
 
 ### Why the VS Code sessions sidebar shares the app's sidebar state
 
-The expanded VS Code layout renders the same sessions sidebar as the desktop layout, so it reads `useUIStore.isSidebarOpen` and `sidebarWidth` rather than keeping a VS Code-only flag in its own storage key. A second flag would disagree with the toggle the desktop layout already persists, and a second width range would apply different bounds to one stored number.
+The expanded VS Code layout reads `useUIStore.isSidebarOpen` and `sidebarWidth`, so collapse and width choices persist through the existing store. VS Code allows resizing down to 196px because its webview has less horizontal space. The desktop layout clamps the shared width to at least 264px when rendering, keeping room for its toolbar.

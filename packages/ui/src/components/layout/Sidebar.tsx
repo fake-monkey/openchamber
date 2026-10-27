@@ -10,9 +10,7 @@ import type { SidebarPeek } from './useSidebarPeek';
 
 const SIDEBAR_CONTENT_WIDTH = 280;
 // Wide enough for the toolbar's eight icons and a labelled titlebar button.
-// The VS Code layout shares this stored width, so it clamps with the same
-// bounds instead of keeping a second range for one value.
-export const SIDEBAR_MIN_WIDTH = 264;
+const SIDEBAR_MIN_WIDTH = 264;
 export const SIDEBAR_MAX_WIDTH = 500;
 
 interface SidebarProps {
