@@ -20,7 +20,7 @@ import { SessionsTabTitle } from '@/components/session/SessionsTabTitle';
 import { useProjectsStore } from '@/stores/useProjectsStore';
 import { useSessionDisplayStore } from '@/stores/useSessionDisplayStore';
 import { getVSCodeBootstrapConfig, getVSCodeBootstrapWorkspaceFolder } from '@/lib/vscodeBootstrap';
-import { SIDEBAR_MAX_WIDTH, SIDEBAR_MIN_WIDTH } from './Sidebar';
+import { SIDEBAR_MAX_WIDTH } from './Sidebar';
 import { cn } from '@/lib/utils';
 import { normalizePath } from '@/lib/pathNormalization';
 import {
@@ -63,6 +63,8 @@ const formatTime = (timestamp: number | null, timeFormatPreference: TimeFormatPr
 // The breakpoint assumes the default 280px sidebar and a usable chat column.
 const SESSIONS_SIDEBAR_WIDTH = 280;
 const EXPANDED_LAYOUT_THRESHOLD = SESSIONS_SIDEBAR_WIDTH + 520;
+// VS Code has less horizontal space than the desktop layout.
+const SESSIONS_SIDEBAR_MIN_WIDTH = Math.round(SESSIONS_SIDEBAR_WIDTH * 0.7);
 
 type VSCodeView = 'sessions' | 'chat';
 
@@ -492,7 +494,7 @@ export const VSCodeLayout: React.FC = () => {
   const usesExpandedLayout = containerWidth >= EXPANDED_LAYOUT_THRESHOLD;
 
   const clampExpandedSidebarWidth = React.useCallback((value: number) => {
-    return Math.min(SIDEBAR_MAX_WIDTH, Math.max(SIDEBAR_MIN_WIDTH, value));
+    return Math.min(SIDEBAR_MAX_WIDTH, Math.max(SESSIONS_SIDEBAR_MIN_WIDTH, value));
   }, []);
 
   const handleExpandedSidebarResizeStart = React.useCallback((event: React.PointerEvent<HTMLDivElement>) => {
