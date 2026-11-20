@@ -363,7 +363,7 @@
     },
     "packages/vscode": {
       "name": "openchamber",
-      "version": "2.7.0-local.1",
+      "version": "2.7.0+custom.1",
       "dependencies": {
         "@openchamber/ui": "workspace:*",
         "@opencode/client": "2.2.6",
